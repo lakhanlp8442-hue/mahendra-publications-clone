@@ -1,0 +1,100 @@
+{% extends 'publications/base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <form method="get" action="{% url 'home' %}" class="row g-2">
+                    <div class="col-md-9">
+                        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search articles by title, author, keyword, or abstract...">
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button type="submit" class="btn btn-primary">Search Papers</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            {% if query %}
+                <h4 class="fw-bold mb-0">Search Results for "{{ query }}" ({{ articles.count }})</h4>
+                <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary">Clear Search</a>
+            {% elif current_issue %}
+                <h4 class="fw-bold mb-0">Current Issue: Volume {{ current_issue.volume }}, Issue {{ current_issue.issue }} ({{ current_issue.month_year }})</h4>
+            {% else %}
+                <h4 class="fw-bold mb-0">Latest Published Research Articles</h4>
+            {% endif %}
+        </div>
+
+        {% if articles %}
+            {% for article in articles %}
+                <div class="card article-card shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-primary-subtle text-primary">Research Article</span>
+                            <small class="text-muted">Tracking ID: {{ article.tracking_id }}</small>
+                        </div>
+                        <h5 class="card-title mt-1">
+                            <a href="{% url 'article_detail' article.id %}" class="text-decoration-none text-dark fw-bold">
+                                {{ article.title }}
+                            </a>
+                        </h5>
+                        <p class="text-muted small mb-2"><strong>Authors:</strong> {{ article.authors_list }}</p>
+                        <p class="card-text small text-secondary">{{ article.abstract|truncatewords:35 }}</p>
+                        {% if article.doi %}
+                            <p class="small mb-2"><strong>DOI:</strong> <span class="text-primary">https://doi.org/{{ article.doi }}</span></p>
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <div class="small text-muted">
+                                Views: {{ article.views_count }} | Downloads: {{ article.downloads_count }}
+                            </div>
+                            <div>
+                                <a href="{% url 'article_detail' article.id %}" class="btn btn-sm btn-outline-primary">Abstract &amp; Cite</a>
+                                <a href="{% url 'download_article' article.id %}" class="btn btn-sm btn-danger">Download PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">No published articles found yet. Log in as Editor/Admin to publish submitted manuscripts.</div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card sidebar-card mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Journal Information</h5>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>E-ISSN:</span><strong>2349-5359</strong></li>
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>P-ISSN:</span><strong>2454-9967</strong></li>
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>Review Process:</span><strong>Double-Blind Peer Review</strong></li>
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>Published Articles:</span><strong>{{ total_published }}</strong></li>
+                </ul>
+                <div class="d-grid mt-3">
+                    <a href="{% url 'submit_manuscript' %}" class="btn btn-success">Submit Your Paper Online</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card sidebar-card mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Recent Issues (Archives)</h5>
+                {% if recent_issues %}
+                    <div class="list-group list-group-flush">
+                        {% for iss in recent_issues %}
+                            <a href="{% url 'issue_detail' iss.id %}" class="list-group-item list-group-item-action px-0 d-flex justify-content-between align-items-center">
+                                <span>Volume {{ iss.volume }}, Issue {{ iss.issue }} ({{ iss.month_year }})</span>
+                                {% if iss.is_current %}<span class="badge bg-success">Current</span>{% endif %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="small text-muted mb-0">No issues created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

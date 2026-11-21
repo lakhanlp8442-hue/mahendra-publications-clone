@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mahendra Publications | IJASE Academic Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .top-issn-bar { background-color: #0b2545; color: #ffffff; font-size: 0.85rem; padding: 6px 0; }
+        .journal-header { background: linear-gradient(135deg, #13315c 0%, #1d4e89 100%); color: #ffffff; padding: 24px 0; }
+        .navbar-academic { background-color: #0b2545; border-top: 1px solid rgba(255,255,255,0.15); }
+        .navbar-academic .nav-link { color: #e0e8f5 !important; font-weight: 500; padding: 10px 16px; }
+        .navbar-academic .nav-link:hover { background-color: #1d4e89; color: #ffffff !important; }
+        .sidebar-card { border: none; border-top: 3px solid #13315c; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .article-card { border-left: 4px solid #1d4e89; transition: transform 0.15s ease; }
+        .article-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .footer-academic { background-color: #0b2545; color: #cbd5e1; padding: 30px 0 15px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<div class="top-issn-bar">
+    <div class="container d-flex justify-content-between flex-wrap">
+        <span><strong>E-ISSN:</strong> 2349-5359 | <strong>P-ISSN:</strong> 2454-9967 | <strong>DOI Prefix:</strong> 10.29294/IJASE</span>
+        <span>Open Access Peer-Reviewed Multidisciplinary Journal</span>
+    </div>
+</div>
+
+<header class="journal-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-1 fw-bold">International Journal of Advanced Science and Engineering</h2>
+                <p class="mb-0 text-light opacity-75">Published by Mahendra Publications | Science, Engineering &amp; Applied Research</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{% url 'submit_manuscript' %}" class="btn btn-warning fw-semibold px-4">Submit Manuscript</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-academic sticky-top">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home / Current Issue</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'archives' %}">Archives</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'editorial_board' %}">Editorial Board</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about_journal' %}">Aim &amp; Scope</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'submit_manuscript' %}">Author Guidelines &amp; Submit</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" href="{% url 'dashboard' %}">
+                            Dashboard ({{ user.username }} - {{ user.get_role_display }})
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-light ms-2">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-sm btn-outline-warning ms-lg-2" href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container my-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer-academic">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <h5 class="text-white">Mahendra Publications</h5>
+                <p class="small mb-1">Academic &amp; Scientific Research Publishing Portal</p>
+                <p class="small text-secondary mb-0">Open Access Policy: All published articles are freely available for academic and research use with proper citation.</p>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h6 class="text-white">Quick Links</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{% url 'home' %}" class="text-decoration-none text-light">Current Issue</a></li>
+                    <li><a href="{% url 'archives' %}" class="text-decoration-none text-light">Volume Archives</a></li>
+                    <li><a href="{% url 'editorial_board' %}" class="text-decoration-none text-light">Editorial Board</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h6 class="text-white">Journal Metrics</h6>
+                <p class="small mb-1">E-ISSN: 2349-5359</p>
+                <p class="small mb-1">P-ISSN: 2454-9967</p>
+                <p class="small mb-0">Frequency: Quarterly / Continuous</p>
+            </div>
+        </div>
+        <hr class="border-secondary">
+        <p class="text-center small mb-0">&copy; 2026 Mahendra Publications (IJASE). All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

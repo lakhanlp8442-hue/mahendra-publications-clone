@@ -1,0 +1,51 @@
+{% extends 'publications/base.html' %}
+
+{% block title %}Editorial Board | Mahendra Publications{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 p-4">
+    <h3 class="fw-bold mb-3">Editorial Board</h3>
+    <p class="text-muted">International Journal of Advanced Science and Engineering (IJASE)</p>
+    <hr>
+
+    <h5 class="fw-bold text-primary mb-3">Editor-in-Chief &amp; Managing Editors</h5>
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card border h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-1">Dr. V. Aroulmoji</h6>
+                    <p class="small text-muted mb-1">Editor-in-Chief, IJASE</p>
+                    <p class="small mb-0">Mahendra Publications, Namakkal, Tamil Nadu, India</p>
+                </div>
+            </div>
+        </div>
+        {% for ed in editors %}
+        <div class="col-md-6">
+            <div class="card border h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-1">{{ ed.get_full_name|default:ed.username }}</h6>
+                    <p class="small text-muted mb-1">Editorial Board Member</p>
+                    <p class="small mb-0">{{ ed.affiliation|default:"Academic Research Division" }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h5 class="fw-bold text-primary mb-3">Peer Review Committee</h5>
+    <div class="row g-3">
+        {% for rev in reviewers %}
+        <div class="col-md-4">
+            <div class="card border h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-1">{{ rev.get_full_name|default:rev.username }}</h6>
+                    <p class="small text-muted mb-0">{{ rev.affiliation|default:"Peer Reviewer" }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="small text-muted">Registered peer reviewers will appear here automatically.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

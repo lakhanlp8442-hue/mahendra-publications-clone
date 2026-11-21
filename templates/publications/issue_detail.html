@@ -1,0 +1,37 @@
+{% extends 'publications/base.html' %}
+
+{% block title %}Volume {{ issue.volume }}, Issue {{ issue.issue }} | IJASE{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'archives' %}" class="btn btn-sm btn-outline-secondary">&larr; Back to Archives</a>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <h3 class="fw-bold mb-1">Volume {{ issue.volume }}, Issue {{ issue.issue }} ({{ issue.month_year }})</h3>
+        <p class="text-muted mb-0">Total Published Articles in this Issue: {{ articles.count }}</p>
+    </div>
+</div>
+
+{% for article in articles %}
+    <div class="card article-card shadow-sm border-0 mb-3">
+        <div class="card-body">
+            <h5 class="fw-bold">
+                <a href="{% url 'article_detail' article.id %}" class="text-decoration-none text-dark">{{ article.title }}</a>
+            </h5>
+            <p class="text-muted small mb-2"><strong>Authors:</strong> {{ article.authors_list }}</p>
+            <p class="small text-secondary">{{ article.abstract|truncatewords:30 }}</p>
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <small class="text-primary">DOI: {{ article.doi }}</small>
+                <div>
+                    <a href="{% url 'article_detail' article.id %}" class="btn btn-sm btn-outline-primary">Read Abstract</a>
+                    <a href="{% url 'download_article' article.id %}" class="btn btn-sm btn-danger">PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <div class="alert alert-info">No articles have been assigned to this issue yet.</div>
+{% endfor %}
+{% endblock %}
